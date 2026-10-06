@@ -8,7 +8,7 @@ RUN cargo build --release --locked --bin gate-agent
 FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
 RUN apk add --no-cache ca-certificates=20260909-r0
 WORKDIR /app
-COPY --from=builder --chown=nobody:nobody /build/target/release/gate-agent /app/gate-agent
+COPY --from=builder --chmod=0555 /build/target/release/gate-agent /app/gate-agent
 USER nobody
 EXPOSE 8787
 ENTRYPOINT ["/app/gate-agent"]

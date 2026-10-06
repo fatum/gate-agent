@@ -12,7 +12,9 @@ RUN apk add --no-cache --update \
   aws-cli=2.34.63-r0 jq=1.8.2-r0 curl=8.22.0-r0 coreutils=9.11-r0 bash=5.3.9-r1
 
 # install
-RUN curl -fsSL "https://raw.githubusercontent.com/CrazyEggInc/gate-agent/refs/tags/v${VERSION#v}/install.sh" | VERSION="${VERSION}" GATE_AGENT_INSTALL_DIR=/app sh
+RUN curl -fsSL "https://raw.githubusercontent.com/CrazyEggInc/gate-agent/refs/tags/v${VERSION#v}/install.sh" -o /tmp/gate-agent-install.sh \
+  && VERSION="${VERSION}" GATE_AGENT_INSTALL_DIR=/app sh /tmp/gate-agent-install.sh \
+  && rm /tmp/gate-agent-install.sh
 
 USER nobody
 EXPOSE 8787

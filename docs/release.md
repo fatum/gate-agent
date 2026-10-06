@@ -125,14 +125,15 @@ curl -fsSL "https://raw.githubusercontent.com/CrazyEggInc/gate-agent/refs/tags/$
 ## Container verification
 
 The root Dockerfile builds the checked-out source using the locked dependencies and a pinned Rust
-builder. Its runtime contains only the binary and CA certificates, runs as `nobody`, and expects a
-readable configuration mounted at `/app/.secrets`. Configure `server.bind = "0.0.0.0"` for access
+builder. Its runtime contains only the binary and CA certificates, runs as `nobody` by default, and
+expects a readable configuration mounted at `/app/.secrets`. Run with the non-root host user's UID
+and GID to read a host-owned `0600` configuration. Configure `server.bind = "0.0.0.0"` for access
 through a published container port.
 
 ```sh
 docker build --platform linux/amd64 -t gate-agent:local .
 docker run --rm gate-agent:local version
-docker run --rm -p 127.0.0.1:8787:8787 -v "$PWD/.secrets:/app/.secrets:ro" gate-agent:local
+docker run --rm --user "$(id -u):$(id -g)" -p 127.0.0.1:8787:8787 -v "$PWD/.secrets:/app/.secrets:ro" gate-agent:local
 ```
 
 The `examples/docker` image remains a released-binary deployment template with AWS CLI and shell
